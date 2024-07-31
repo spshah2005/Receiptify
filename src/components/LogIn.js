@@ -3,7 +3,8 @@ import {Form, Button, Card, Alert} from 'react-bootstrap'
 import {useAuth} from '../context/AuthContext'
 import {Link, useNavigate} from "react-router-dom"
 
-export default function LogIn() {
+
+export default function LogIn({addExpense}) {
     const emailRef = useRef()
     const passwordRef = useRef()
     const {login} = useAuth()
