@@ -14,11 +14,13 @@ import UploadReceipt from "./UploadReceipt"
 //other
 import {Container} from "react-bootstrap"
 import {AuthProvider} from "../context/AuthContext"
+import { ExpenseProvider } from '../context/ExpenseContext';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 
 
 function App() {
   return (
+  <ExpenseProvider>
   <AuthProvider>
     <AppNav />
     <Container className = "d-flex align-items-center justify-content-center"
@@ -38,6 +40,7 @@ function App() {
         </div>
       </Container> 
     </AuthProvider>
+    </ExpenseProvider>
   );
 }
 

@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react"
 import {Card, Button, Alert,Container} from "react-bootstrap"
 import {useAuth} from "../context/AuthContext"
+import { useExpense } from '../context/ExpenseContext';
+
 import {Link,useNavigate} from "react-router-dom"
 import ExpenseCard from "./ExpenseCard"
 
@@ -12,13 +14,10 @@ export default function ExpenseDash() {
     const[error,setError] = useState("")
     const {currentUser,logout} = useAuth()
     const navigate = useNavigate()
-    const [expenses, setExpenses] = useState([]);
-    
-    const addExpense = (newExpense) => {
-        setExpenses(prevExpenses => [...prevExpenses, newExpense]);
-    };
+    const {expenses,setExpenses, addExpense } = useExpense();
 
     useEffect(() => {
+        setExpenses([])
         const db = firebase.firestore();
         const docRef = db.collection('users').doc(currentUser.uid);
         const checkIfExists = async () => {
@@ -27,8 +26,8 @@ export default function ExpenseDash() {
                 await docRef.set({});
                 const subcollectionRef = docRef.collection('expenses');
                 // Add a placeholder document to create the subcollection
-                const placeholderDocRef = await subcollectionRef.add({ id: 0, title: "starter", amount: 0 });
-                addExpense({ id: 0, title: "starter", amount: 0 })
+                const placeholderDocRef = await subcollectionRef.add({item: "starter", cost: 0 });
+                addExpense({item: "starter", cost: 0 })
                 console.log('Subcollection created with placeholder document ID: ', placeholderDocRef.id);
             }
         }
@@ -38,7 +37,7 @@ export default function ExpenseDash() {
           .then(snapshot => {
             snapshot.docs.forEach(doc => {
                 const userData = doc.data()
-                addExpense({id:doc.id, title: userData.item, amount: userData.cost})
+                addExpense({item: userData.item, cost: userData.cost})
             });
           })
           .catch(error => {
@@ -54,7 +53,9 @@ export default function ExpenseDash() {
         } catch {
             setError("Failed to Log out")
         }
+        setExpenses([]);
     }
+
     return (
         <div >
             <Card>
@@ -63,7 +64,7 @@ export default function ExpenseDash() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Container className = "w-100 d-flex flex-wrap align-items-stretch justify-content-left gap-4">
                          {expenses.map(expense => (
-                            <ExpenseCard key={expense.id} title={expense.title} amount={expense.amount} addExpense={addExpense}/>
+                            <ExpenseCard  item={expense.item} cost={expense.cost} addExpense={addExpense}/>
                          ))}
                          <Link to="/upload-receipt" 
                          className="btn btn-primary w-25 d-flex justify-content-center align-items-center" 

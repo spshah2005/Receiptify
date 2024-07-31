@@ -1,15 +1,22 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import {Form, Card,Button} from 'react-bootstrap'
 import {useAuth} from '../context/AuthContext'
+
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {Link} from "react-router-dom"
 
+//firebase
+//firebase
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
-export default function UploadReceipt({addExpense}) {
+export default function UploadReceipt() {
     const {currentUser} = useAuth()
     const [downloadUrl, setDownloadUrl] = useState('');
     const [checkReceipt, setCheckReceipt] = useState(false)
     const storage = getStorage();
+    const itemRef = useRef()
+    const costRef = useRef()
 
     useEffect( () => {
         if(downloadUrl){
@@ -46,9 +53,16 @@ export default function UploadReceipt({addExpense}) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log("hooray")
         await uploadImage(document.getElementById("receiptImageFile").files[0])
-        addExpense({ id: 2, title: 'Rent', amount: 1000 });
+
+    }
+
+    async function handleExpense(e){
+        e.preventDefault();
+         //add new expense to database
+         const db = firebase.firestore();
+         const docRef = db.collection('users').doc(currentUser.uid).collection('expenses')
+         await docRef.add({ item: itemRef.current.value, cost: costRef.current.value })
     }
 
     return (
@@ -63,7 +77,22 @@ export default function UploadReceipt({addExpense}) {
                         <Button  className="w-100 mt-2" type="submit">Upload</Button>
                     </Form>
                     {downloadUrl && <img className="w-100"src={downloadUrl} alt="receipt"/>}
-                    <Button disabled = {!checkReceipt} className="w-100 mt-2" type="button"> Check Receipt </Button>
+
+
+                    {checkReceipt &&
+                        <Form >
+                            <Form.Group className="mt-4">
+                                <Form.Label> Item Name </Form.Label>
+                                <Form.Control ref={itemRef} required/>
+                            </Form.Group>
+
+                            <Form.Group className="mt-4">
+                                <Form.Label> Cost </Form.Label>
+                                <Form.Control type="number" ref={costRef} required/>
+                            </Form.Group>
+                        </Form>
+                    }
+                    <Button disabled = {!checkReceipt} className="w-100 mt-2" type="button" onClick={handleExpense}> Verify Receipt </Button>
                 </Card.Body>
             </Card>
             <div className = "w-100 text-center mt-2">
