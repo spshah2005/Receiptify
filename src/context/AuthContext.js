@@ -37,6 +37,7 @@ export function AuthProvider({children}) {
     useEffect(()=> {
         const unsubscribe =  auth.onAuthStateChanged(user=>{
             setCurrentUser(user)
+            console.log('log in/out')
         })
         return unsubscribe
     }, []) //empty dependency array to only run on mount
@@ -48,8 +49,8 @@ export function AuthProvider({children}) {
         logout,
         resetPassword,
         updateEmail,
-        updatePassword
-        }
+        updatePassword,
+    }
 
     return (
      <AuthContext.Provider value={value}>
@@ -57,4 +58,3 @@ export function AuthProvider({children}) {
      </AuthContext.Provider>
     );
   }
-    

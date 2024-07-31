@@ -25,7 +25,6 @@ export default function Dashboard() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong> {currentUser.email}
                     <Link to="/update-profile" className="btn btn-primary w-100 mt-3"> Update Profile </Link>
-                    <Link to="/upload-receipt" className="btn btn-primary w-100 mt-3"> Upload Expense </Link>
                 </Card.Body>
             </Card>
             <div className="w-100 text-center mt-2">

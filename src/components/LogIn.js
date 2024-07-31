@@ -17,7 +17,7 @@ export default function LogIn() {
             setError('')
             setLoading(true)
             await login(emailRef.current.value, passwordRef.current.value)
-            navigate("/")
+            navigate("/expenses")
         } catch(error) {
             console.log(error)
             setError('Failed to sign in')

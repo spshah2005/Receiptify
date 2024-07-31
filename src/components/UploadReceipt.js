@@ -5,7 +5,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {Link} from "react-router-dom"
 
 
-export default function UploadReceipt() {
+export default function UploadReceipt({addExpense}) {
     const {currentUser} = useAuth()
     const [downloadUrl, setDownloadUrl] = useState('');
     const [checkReceipt, setCheckReceipt] = useState(false)
@@ -48,6 +48,7 @@ export default function UploadReceipt() {
         e.preventDefault();
         console.log("hooray")
         await uploadImage(document.getElementById("receiptImageFile").files[0])
+        addExpense({ id: 2, title: 'Rent', amount: 1000 });
     }
 
     return (
@@ -66,7 +67,7 @@ export default function UploadReceipt() {
                 </Card.Body>
             </Card>
             <div className = "w-100 text-center mt-2">
-                <Link to="/"> Back to Dashboard</Link>
+                <Link to="/expenses"> Back to Dashboard</Link>
             </div>
         </>
     );
