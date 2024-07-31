@@ -20,14 +20,24 @@ export default function ExpenseDash() {
 
     useEffect(() => {
         const db = firebase.firestore();
-    
-        // Read data from a collection
-        //db.collection('/users/BIziGJiDcSXtoeMEhIoCeffntS62/expenses')
-        db.collection('users').doc(currentUser.uid).collection('expenses').get()
+        const docRef = db.collection('users').doc(currentUser.uid);
+        const checkIfExists = async () => {
+            const doc = await docRef.get()
+            if (!doc.exists) {
+                await docRef.set({});
+                const subcollectionRef = docRef.collection('expenses');
+                // Add a placeholder document to create the subcollection
+                const placeholderDocRef = await subcollectionRef.add({ id: 0, title: "starter", amount: 0 });
+                addExpense({ id: 0, title: "starter", amount: 0 })
+                console.log('Subcollection created with placeholder document ID: ', placeholderDocRef.id);
+            }
+        }
+
+        checkIfExists();
+        docRef.collection('expenses').get()
           .then(snapshot => {
             snapshot.docs.forEach(doc => {
                 const userData = doc.data()
-                console.log(userData)
                 addExpense({id:doc.id, title: userData.item, amount: userData.cost})
             });
           })
