@@ -72,7 +72,7 @@ export default function UploadReceipt() {
             const wordsArray = text.split(/\s+/);
             const index = wordsArray.findIndex(word => {
                 const lowerCaseWord = word.toLowerCase();
-                return lowerCaseWord.includes('total') && !lowerCaseWord.includes('subtotal');
+                return (lowerCaseWord.includes('total')||lowerCaseWord.includes('charge')) && !lowerCaseWord.includes('subtotal');
             });
             if (index!==-1){
                 let totalPrice = wordsArray[index+1]
