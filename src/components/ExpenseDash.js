@@ -15,6 +15,7 @@ export default function ExpenseDash() {
     const {currentUser,logout} = useAuth()
     const navigate = useNavigate()
     const {expenses,setExpenses, addExpense } = useExpense();
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         setExpenses([])
@@ -38,6 +39,7 @@ export default function ExpenseDash() {
             snapshot.docs.forEach(doc => {
                 const userData = doc.data()
                 addExpense({item: userData.item, cost: userData.cost, receiptUrl:userData.receiptUrl})
+                setTotal(prevTotal => prevTotal + userData.cost);
             });
           })
           .catch(error => {
@@ -57,22 +59,22 @@ export default function ExpenseDash() {
     }
 
     return (
-        <div >
-            <Card>
-                <Card.Body className="w-100">
-                    <h2 className = "text-center mb-4">Your Expenses</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Container className = "w-100 d-flex flex-wrap align-items-stretch justify-content-left gap-4">
-                         {expenses.map(expense => (
-                            <ExpenseCard  item={expense.item} cost={expense.cost} receiptUrl={expense.receiptUrl} addExpense={addExpense}/>
-                         ))}
-                         <Link to="/upload-receipt" 
-                         className="btn btn-primary w-25 d-flex justify-content-center align-items-center" 
-                         style={{backgroundColor:"#add8e6", color:"black", border:"#add8e6"}}> 
-                         + </Link>
-                    </Container>
-                </Card.Body>
-            </Card>
+        <div className="w-100 ">
+            <h1 className = "mb-4" style={{fontSize:"50px", fontFamily: "'Brush Script MT', cursive"}}>your expenses</h1>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Container className = "w-100 d-flex flex-wrap align-items-stretch justify-content-left gap-1">
+                    {expenses.map(expense => (
+                    <ExpenseCard  item={expense.item} cost={expense.cost} receiptUrl={expense.receiptUrl} addExpense={addExpense}/>
+                    ))}
+                    <Link to="/upload-receipt" 
+                    className="btn btn-primary d-flex justify-content-center align-items-center" 
+                    style={{width:"20%", backgroundColor:"#add8e6", color:"black", border:"2px solid black"}}> 
+                    + </Link>
+            </Container>
+            
+            <Container>
+                <h5 className = "mb-4 mt-4" style={{fontSize:"30px", fontFamily: "'Brush Script MT', cursive"}}>total: ${total}</h5>
+            </Container>
             <div className="w-100 text-center mt-2">
                 <Button variant="link" onClick={handleLogout}>Log Out</Button>
             </div>

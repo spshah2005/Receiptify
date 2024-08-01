@@ -30,8 +30,8 @@ export default function Signup() {
         setLoading(false)
     }
     return (
-        <>
-            <Card> 
+        <div>
+            <Card  style={{maxWidth:"400px", margin:"auto"}}> 
                 <Card.Body>
                     <h2 className="text-center mb-4"> Sign Up</h2>
                     {error && <Alert variant = "danger">{error}</Alert>}
@@ -57,6 +57,6 @@ export default function Signup() {
             <div className = "w-100 text-center mt-2">
                 Already have an account? <Link to="/login"> Log In</Link>
             </div>
-        </>
+        </div>
     );
 }

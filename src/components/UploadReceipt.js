@@ -94,12 +94,12 @@ export default function UploadReceipt() {
          //add new expense to database
          const db = firebase.firestore();
          const docRef = db.collection('users').doc(currentUser.uid).collection('expenses')
-         await docRef.add({ item: itemRef.current.value, cost: costRef.current.value, receiptUrl:downloadUrl })
+         await docRef.add({ item: itemRef.current.value, cost: parseFloat(costRef.current.value), receiptUrl:downloadUrl })
     }
 
     return (
         <>
-            <Card>
+            <Card  style={{maxWidth:"400px", margin:"auto"}}>
                 <Card.Body>
                     <Form className="mb-4" onSubmit={handleSubmit}>
                         <Form.Group>

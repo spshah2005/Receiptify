@@ -25,7 +25,7 @@ function App() {
     <AppNav />
     <Container className = "d-flex align-items-center justify-content-center"
     style = {{minHeight: "100vh"}} >
-      <div className = "w-100" style={{maxWidth:"400px"}}>
+      <div className = "w-100" >
           <Router>
               <Routes>
                 <Route path="/" element={<Home/>} />
