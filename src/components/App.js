@@ -28,7 +28,7 @@ function App() {
       <div className = "w-100" style={{maxWidth:"400px"}}>
           <Router>
               <Routes>
-                <Route path="/home" element={<Home/>} />
+                <Route path="/" element={<Home/>} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/expenses" element={<PrivateRoute> <ExpenseDash/> </PrivateRoute>} />

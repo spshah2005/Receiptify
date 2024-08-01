@@ -26,8 +26,8 @@ export default function ExpenseDash() {
                 await docRef.set({});
                 const subcollectionRef = docRef.collection('expenses');
                 // Add a placeholder document to create the subcollection
-                const placeholderDocRef = await subcollectionRef.add({item: "starter", cost: 0 });
-                addExpense({item: "starter", cost: 0 })
+                const placeholderDocRef = await subcollectionRef.add({item: "starter", cost: 0, receiptUrl: "https://m.media-amazon.com/images/I/71+EFMjZRBL._AC_UF894,1000_QL80_.jpg" });
+                addExpense({item: "starter", cost: 0, receiptUrl: "https://m.media-amazon.com/images/I/71+EFMjZRBL._AC_UF894,1000_QL80_.jpg"})
                 console.log('Subcollection created with placeholder document ID: ', placeholderDocRef.id);
             }
         }
@@ -37,7 +37,7 @@ export default function ExpenseDash() {
           .then(snapshot => {
             snapshot.docs.forEach(doc => {
                 const userData = doc.data()
-                addExpense({item: userData.item, cost: userData.cost})
+                addExpense({item: userData.item, cost: userData.cost, receiptUrl:userData.receiptUrl})
             });
           })
           .catch(error => {
@@ -64,7 +64,7 @@ export default function ExpenseDash() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Container className = "w-100 d-flex flex-wrap align-items-stretch justify-content-left gap-4">
                          {expenses.map(expense => (
-                            <ExpenseCard  item={expense.item} cost={expense.cost} addExpense={addExpense}/>
+                            <ExpenseCard  item={expense.item} cost={expense.cost} receiptUrl={expense.receiptUrl} addExpense={addExpense}/>
                          ))}
                          <Link to="/upload-receipt" 
                          className="btn btn-primary w-25 d-flex justify-content-center align-items-center" 

@@ -6,9 +6,10 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {Link} from "react-router-dom"
 
 //firebase
-//firebase
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
+
+import Tesseract from 'tesseract.js';
 
 export default function UploadReceipt() {
     const {currentUser} = useAuth()
@@ -17,6 +18,8 @@ export default function UploadReceipt() {
     const storage = getStorage();
     const itemRef = useRef()
     const costRef = useRef()
+    const [costValue, setCostValue] = useState('');
+    const [titleValue, setTitleValue] = useState('');
 
     useEffect( () => {
         if(downloadUrl){
@@ -49,6 +52,35 @@ export default function UploadReceipt() {
         } else {
         console.error('User is not logged in.');
         }
+
+        Tesseract.recognize(
+            image,'eng',
+          )
+          .catch (err => {
+            console.error(err);
+          })
+          .then(result => {
+           console.log(result);
+           const text = result.data.text
+           
+
+            //title
+            const match = text.match(/^[^\n]*/);
+            if (match) {
+            setTitleValue(match[0]) }
+            //price
+            const wordsArray = text.split(/\s+/);
+            const index = wordsArray.findIndex(word => {
+                const lowerCaseWord = word.toLowerCase();
+                return lowerCaseWord.includes('total') && !lowerCaseWord.includes('subtotal');
+            });
+            if (index!==-1){
+                let totalPrice = wordsArray[index+1]
+                console.log(totalPrice)
+                if (totalPrice.includes("$")) { totalPrice = totalPrice.substring(1)}
+                setCostValue(parseFloat(totalPrice))
+            }
+          })      
     }
 
     async function handleSubmit(e) {
@@ -62,7 +94,7 @@ export default function UploadReceipt() {
          //add new expense to database
          const db = firebase.firestore();
          const docRef = db.collection('users').doc(currentUser.uid).collection('expenses')
-         await docRef.add({ item: itemRef.current.value, cost: costRef.current.value })
+         await docRef.add({ item: itemRef.current.value, cost: costRef.current.value, receiptUrl:downloadUrl })
     }
 
     return (
@@ -83,12 +115,12 @@ export default function UploadReceipt() {
                         <Form >
                             <Form.Group className="mt-4">
                                 <Form.Label> Item Name </Form.Label>
-                                <Form.Control ref={itemRef} required/>
+                                <Form.Control ref={itemRef} value={titleValue} required/>
                             </Form.Group>
 
                             <Form.Group className="mt-4">
                                 <Form.Label> Cost </Form.Label>
-                                <Form.Control type="number" ref={costRef} required/>
+                                <Form.Control type="number" ref={costRef} value={costValue} required/>
                             </Form.Group>
                         </Form>
                     }
