@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from "react"
-import {Card, Button, Alert,Container} from "react-bootstrap"
+import {Container} from "react-bootstrap"
 import {useAuth} from "../context/AuthContext"
 import { useExpense } from '../context/ExpenseContext';
 
-import {Link,useNavigate} from "react-router-dom"
+import {Link} from "react-router-dom"
 import ExpenseCard from "./ExpenseCard"
 
 //firebase
@@ -11,9 +11,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 
 export default function ExpenseDash() {
-    const[error,setError] = useState("")
-    const {currentUser,logout} = useAuth()
-    const navigate = useNavigate()
+    const {currentUser} = useAuth()
     const {expenses,setExpenses, addExpense } = useExpense();
     const [total, setTotal] = useState(0);
 
@@ -47,21 +45,9 @@ export default function ExpenseDash() {
           });
       }, [])
 
-    async function handleLogout() {
-        setError('')
-        try {
-            await logout()
-            navigate("/login")
-        } catch {
-            setError("Failed to Log out")
-        }
-        setExpenses([]);
-    }
-
     return (
         <div className="w-100 ">
             <h1 className = "mb-4" style={{fontSize:"50px", fontFamily: "'Brush Script MT', cursive"}}>your expenses</h1>
-            {error && <Alert variant="danger">{error}</Alert>}
             <Container className = "w-100 d-flex flex-wrap align-items-stretch justify-content-left gap-1">
                     {expenses.map(expense => (
                     <ExpenseCard  item={expense.item} cost={expense.cost} receiptUrl={expense.receiptUrl} addExpense={addExpense}/>
@@ -75,9 +61,6 @@ export default function ExpenseDash() {
             <Container>
                 <h5 className = "mb-4 mt-4" style={{fontSize:"30px", fontFamily: "'Brush Script MT', cursive"}}>total: ${total}</h5>
             </Container>
-            <div className="w-100 text-center mt-2">
-                <Button variant="link" onClick={handleLogout}>Log Out</Button>
-            </div>
         </div>
     );
 }
