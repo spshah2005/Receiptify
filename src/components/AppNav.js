@@ -20,6 +20,11 @@ export default function AppNav() {
                     )}
                     <Nav.Link href="/expenses">My Expenses</Nav.Link>
                 </Nav>
+                {currentUser &&
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/update-profile">My Profile</Nav.Link>
+                    </Nav>
+                }
             </Navbar.Collapse>
         </Container>
     </Navbar>
