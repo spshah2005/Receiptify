@@ -68,7 +68,7 @@ export default function ExpenseDash() {
                     ))}
                     <Link to="/upload-receipt" 
                     className="btn btn-primary d-flex justify-content-center align-items-center" 
-                    style={{width:"20%", backgroundColor:"#add8e6", color:"black", border:"2px solid black"}}> 
+                    style={{width:"18%", backgroundColor:"#add8e6", color:"black", border:"2px solid black"}}> 
                     + </Link>
             </Container>
             
